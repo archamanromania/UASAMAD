@@ -12,6 +12,7 @@ class _AddDataState extends State<AddData> {
   final ctrlName = TextEditingController();
   final ctrlDesc = TextEditingController();
   final ctrlPrice = TextEditingController();
+  final ctrlExp = TextEditingController();
 
   PickedFile imageFile;
   final ImagePicker imagePicker = ImagePicker();
@@ -65,6 +66,7 @@ class _AddDataState extends State<AddData> {
     ctrlName.dispose();
     ctrlDesc.dispose();
     ctrlPrice.dispose();
+    ctrlExp.dispose();
     super.dispose();
   }
 
@@ -72,6 +74,7 @@ class _AddDataState extends State<AddData> {
     ctrlName.clear();
     ctrlDesc.clear();
     ctrlPrice.clear();
+    ctrlExp.dispose();
     setState(() {
       imageFile = null;
     });
@@ -145,7 +148,28 @@ class _AddDataState extends State<AddData> {
                             controller: ctrlPrice,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "Product Name",
+                              labelText: "Product Price",
+                              prefixIcon: Icon(Icons.label),
+                              border: OutlineInputBorder(),
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Please fill in the field!";
+                              } else {
+                                return null;
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            height: 24,
+                          ),
+                          TextFormField(
+                            controller: ctrlExp,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "Product Expire Date",
                               prefixIcon: Icon(Icons.label),
                               border: OutlineInputBorder(),
                             ),
@@ -210,6 +234,7 @@ class _AddDataState extends State<AddData> {
                                       ctrlName.text,
                                       ctrlDesc.text,
                                       ctrlPrice.text,
+                                      ctrlExp.text,
                                       "",
                                       FirebaseAuth.instance.currentUser.uid,
                                       "",

@@ -4,6 +4,7 @@ class Products {
   final String productId;
   final String productName;
   final String productPrice;
+  final String productExp;
   final String productDescription;
   final String productImg;
   final String addBy;
@@ -14,6 +15,7 @@ class Products {
     this.productId,
     this.productName,
     this.productPrice,
+    this.productExp,
     this.productDescription,
     this.productImg,
     this.addBy,

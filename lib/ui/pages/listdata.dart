@@ -7,36 +7,38 @@ class ListData extends StatefulWidget {
 
 class _ListDataState extends State<ListData> {
   String uid = FirebaseAuth.instance.currentUser.uid;
-  CollectionReference productCollection = FirebaseFirestore.instance.collection("products");
+  CollectionReference productCollection =
+      FirebaseFirestore.instance.collection("products");
 
-  Widget buildBody(){
+  Widget buildBody() {
     return Container(
       width: double.infinity,
       height: double.infinity,
       child: StreamBuilder<QuerySnapshot>(
         stream: productCollection.where('addBy', isEqualTo: uid).snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if(snapshot.hasError){
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
             return Text("Failed to load data");
           }
 
-          if(snapshot.connectionState == ConnectionState.waiting){
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return ActivityServices.loadings();
           }
 
           return new ListView(
-            children: snapshot.data.docs.map((DocumentSnapshot doc){
+            children: snapshot.data.docs.map((DocumentSnapshot doc) {
               Products products = new Products(
                 doc.data()['productId'],
                 doc.data()['productName'],
                 doc.data()['productDescription'],
                 doc.data()['productPrice'],
+                doc.data()['productExp'],
                 doc.data()['productImg'],
                 doc.data()['addBy'],
                 doc.data()['createdAt'],
                 doc.data()['updatedAt'],
               );
-              return ProductCard(products:products);
+              return ProductCard(products: products);
             }).toList(),
           );
         },
@@ -53,9 +55,6 @@ class _ListDataState extends State<ListData> {
       ),
       resizeToAvoidBottomInset: false,
       body: buildBody(),
-
     );
   }
-  
-
 }

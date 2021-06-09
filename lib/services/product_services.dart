@@ -1,11 +1,11 @@
 part of 'services.dart';
 
-class ProductServices{
-
+class ProductServices {
   static FirebaseAuth auth = FirebaseAuth.instance;
 
   //setup cloud firestore
-  static CollectionReference productCollection = FirebaseFirestore.instance.collection("products");
+  static CollectionReference productCollection =
+      FirebaseFirestore.instance.collection("products");
   static DocumentReference productDocument;
 
   //setup storage
@@ -13,7 +13,7 @@ class ProductServices{
   static UploadTask uploadTask;
   static String imgUrl;
 
-  static Future<bool> addProduct(Products products, PickedFile imgFile) async{
+  static Future<bool> addProduct(Products products, PickedFile imgFile) async {
     await Firebase.initializeApp();
     String dateNow = ActivityServices.dateNow();
     productDocument = await productCollection.add({
@@ -21,32 +21,34 @@ class ProductServices{
       'productName': products.productName,
       'productDescription': products.productDescription,
       'productPrice': products.productPrice,
+      'productExp': products.productExp,
       'productImg': products.productImg,
       'addBy': products.addBy,
       'createdAt': dateNow,
       'updatedAt': dateNow,
     });
 
-  if(productDocument != null){
-    Reference ref = FirebaseStorage.instance.ref().child("images").child(productDocument.id + ".png");
-    uploadTask = ref.putFile(File(imgFile.path));
+    if (productDocument != null) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child("images")
+          .child(productDocument.id + ".png");
+      uploadTask = ref.putFile(File(imgFile.path));
 
-    await uploadTask.whenComplete(() => 
-      ref.getDownloadURL().then((value) => imgUrl = value,)
-    );
+      await uploadTask.whenComplete(() => ref.getDownloadURL().then(
+            (value) => imgUrl = value,
+          ));
 
-    productCollection.doc(productDocument.id).update({
-      'productId': productDocument.id,
-      'productImg': imgUrl,
+      productCollection.doc(productDocument.id).update({
+        'productId': productDocument.id,
+        'productImg': imgUrl,
+      });
+
+      return true;
+    } else {
+      return false;
     }
-    );
-
-    return true;
-  }else{
-    return false;
   }
-
-  } 
 
   static Future<bool> deleteProduct(String id) async {
     bool hsl = true;
@@ -59,5 +61,4 @@ class ProductServices{
 
     return hsl;
   }
-
 }
